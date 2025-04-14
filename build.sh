@@ -5,11 +5,6 @@ set -o errexit
 # Install PHP dependencies
 composer install --no-dev --optimize-autoloader
 
-# Create SQLite database directory with proper permissions
-mkdir -p /var/www/database
-touch /var/www/database/database.sqlite
-chmod -R 775 /var/www/database
-
 # Generate application key if not set
 php artisan key:generate --force
 

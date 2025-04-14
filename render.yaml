@@ -2,16 +2,22 @@ services:
   - type: web
     name: monblog
     env: php
-    buildCommand: "composer install && php artisan migrate --force"
-    startCommand: "php artisan serve --host 0.0.0.0 --port 10000"
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan key:generate
+      php artisan migrate --force
+      php artisan storage:link
+      npm install && npm run build
+    startCommand: php artisan serve --host=0.0.0.0 --port=10000
     envVars:
       - key: APP_ENV
         value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
-        value: database/database.sqlite touch database/database.sqlite
-git add database/database.sqlite
-git commit -m "Ajout de la base sqlite pour Render"
-git push origin main
-
+        value: /opt/render/project/src/database/database.sqlite
